@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive AI Capability Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The SPA is structured as an interactive dashboard with four main tabs: "Overview," "Core Services," "Industry Solutions," and "AI in Action." This design moves beyond a static linear page, encouraging user exploration. Users can discover services and see which industries they apply to, or explore an industry and see the relevant AI solutions. This cross-referenced, task-oriented structure was chosen to make the company's complex offerings more tangible and understandable for potential clients, allowing them to quickly find information relevant to their specific needs. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Service descriptions and their relevance to different sectors. -> Goal: Compare & Inform -> Viz: Interactive cards and a dynamic bar chart (Chart.js) to show service applicability across sectors. -> Interaction: Click a service card to update the chart and details. -> Justification: This visually connects abstract services to concrete industry applications.
+        - Report Info: Sector-specific AI use cases. -> Goal: Organize & Compare -> Viz: Interactive sector cards and a dynamic donut chart (Chart.js) showing the mix of AI technologies used. -> Interaction: Click a sector to see detailed use cases and update the chart. -> Justification: Helps clients in specific industries quickly grasp the potential of AI for their field.
+        - Report Info: AI-powered feature examples. -> Goal: Engage & Demonstrate -> Viz: Interactive HTML forms for a Sentiment Analyzer and a simulated Image Classifier. -> Interaction: User input triggers a simulated AI response. -> Justification: Provides a tangible, hands-on experience of AI capabilities, making them less abstract.
+        - All diagrams and icons are built with HTML/CSS/Tailwind and Unicode characters to avoid SVG/image dependencies.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-button.active { border-color: #4f46e5; color: #4f46e5; background-color: #eef2ff; }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 300px; max-height: 350px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .card-enter { animation: card-enter 0.5s ease-out forwards; }
+        @keyframes card-enter {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div id="app" class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700">AI Capability Explorer</h1>
+            <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">An interactive overview of our AI services, industry solutions, and technological expertise, based in Shivamogga, Karnataka.</p>
+        </header>
+
+        <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6">
+            <nav class="mb-6 border-b border-slate-200">
+                <div class="flex flex-wrap -mb-px justify-center gap-2 md:gap-4" id="tab-navigation">
+                    <button data-tab="overview" class="tab-button inline-block py-3 px-4 text-base font-semibold text-center text-slate-500 rounded-t-lg border-b-4 border-transparent hover:text-indigo-600 hover:border-indigo-300 transition-colors duration-300 active">
+                        <span class="mr-2">🏠</span>Overview
+                    </button>
+                    <button data-tab="services" class="tab-button inline-block py-3 px-4 text-base font-semibold text-center text-slate-500 rounded-t-lg border-b-4 border-transparent hover:text-indigo-600 hover:border-indigo-300 transition-colors duration-300">
+                        <span class="mr-2">🛠️</span>Core Services
+                    </button>
+                    <button data-tab="sectors" class="tab-button inline-block py-3 px-4 text-base font-semibold text-center text-slate-500 rounded-t-lg border-b-4 border-transparent hover:text-indigo-600 hover:border-indigo-300 transition-colors duration-300">
+                        <span class="mr-2">🏢</span>Industry Solutions
+                    </button>
+                    <button data-tab="demos" class="tab-button inline-block py-3 px-4 text-base font-semibold text-center text-slate-500 rounded-t-lg border-b-4 border-transparent hover:text-indigo-600 hover:border-indigo-300 transition-colors duration-300">
+                        <span class="mr-2">💡</span>AI in Action
+                    </button>
+                </div>
+            </nav>
+
+            <main id="tab-content">
+                <!-- Overview Content -->
+                <div id="overview-content" class="tab-pane active">
+                     <div class="text-center p-6 bg-indigo-50 rounded-xl">
+                        <h2 class="text-3xl font-bold text-indigo-800 mb-4">Empowering Businesses with Transformative AI</h2>
+                        <p class="text-slate-700 leading-relaxed max-w-4xl mx-auto">
+                            Welcome to our interactive explorer. This application is designed to give you a comprehensive understanding of our AI capabilities. Navigate through our **Core Services** to see the technologies we master, explore **Industry Solutions** to understand how AI can be applied to your specific field, and visit **AI in Action** for a hands-on demonstration of our expertise. Our goal is to translate complex AI potential into tangible business value and a significant return on investment.
+                        </p>
+                    </div>
+                     <div class="grid md:grid-cols-2 gap-8 mt-8">
+                        <div class="bg-slate-100 p-6 rounded-xl">
+                             <h3 class="font-bold text-xl mb-3 text-slate-700">Our Mission</h3>
+                             <p>To deliver innovative, ethical, and practical AI solutions that solve real-world problems and create significant value for our clients, from startups to large enterprises.</p>
+                        </div>
+                        <div class="bg-slate-100 p-6 rounded-xl">
+                            <h3 class="font-bold text-xl mb-3 text-slate-700">Our AI Philosophy</h3>
+                            <p>We believe in a client-centric approach, focusing on creating tailored solutions that are not only technologically advanced but also seamlessly integrate into existing business processes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Content -->
+                <div id="services-content" class="tab-pane hidden">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-indigo-800">Our Core AI Services</h2>
+                        <p class="mt-2 text-slate-600">Click on a service to learn more and see its application across various industries.</p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8" id="services-grid">
+                        <!-- Service cards will be injected here by JS -->
+                    </div>
+                    <div id="service-detail-view" class="p-6 bg-slate-100 rounded-xl grid md:grid-cols-2 gap-8 items-center hidden">
+                        <div id="service-detail-text">
+                            <h3 id="service-detail-title" class="text-2xl font-bold text-indigo-700 mb-3"></h3>
+                            <p id="service-detail-description" class="text-slate-600 leading-relaxed"></p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="service-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sectors Content -->
+                <div id="sectors-content" class="tab-pane hidden">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-indigo-800">Sector-Specific Solutions</h2>
+                        <p class="mt-2 text-slate-600">Select an industry to discover tailored AI use cases and applications.</p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8" id="sectors-grid">
+                        <!-- Sector cards will be injected here by JS -->
+                    </div>
+                    <div id="sector-detail-view" class="p-6 bg-slate-100 rounded-xl grid md:grid-cols-2 gap-8 items-center hidden">
+                         <div id="sector-detail-text">
+                            <h3 id="sector-detail-title" class="text-2xl font-bold text-indigo-700 mb-3"></h3>
+                            <ul id="sector-detail-usecases" class="list-disc list-inside text-slate-600 space-y-2"></ul>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="sector-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Demos Content -->
+                <div id="demos-content" class="tab-pane hidden">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-indigo-800">AI in Action: Interactive Demos</h2>
+                        <p class="mt-2 text-slate-600">Get a hands-on feel for our AI capabilities with these simple, interactive demonstrations.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-xl shadow-lg">
+                            <h3 class="text-xl font-bold mb-4 text-indigo-700">Sentiment Analyzer</h3>
+                            <p class="text-sm text-slate-500 mb-4">Type some text to analyze its sentiment. This showcases basic Natural Language Processing.</p>
+                            <textarea id="sentiment-input" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500" rows="4" placeholder="e.g., 'The service was absolutely fantastic!'"></textarea>
+                            <button id="analyze-sentiment-btn" class="mt-4 w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors">Analyze</button>
+                            <div id="sentiment-result" class="mt-4 text-center font-semibold text-lg p-3 rounded-lg hidden"></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg">
+                            <h3 class="text-xl font-bold mb-4 text-indigo-700">Image Classifier (Simulation)</h3>
+                            <p class="text-sm text-slate-500 mb-4">Upload an image to see how AI can classify it. This is a simulation of a Computer Vision model.</p>
+                             <div class="mt-2 flex justify-center rounded-lg border border-dashed border-slate-900/25 px-6 py-10">
+                                <div class="text-center">
+                                    <span class="text-4xl">🖼️</span>
+                                    <div class="mt-4 flex text-sm leading-6 text-slate-600">
+                                        <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+                                            <span>Upload a file</span>
+                                            <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">or drag and drop</p>
+                                    </div>
+                                    <p class="text-xs leading-5 text-slate-600">PNG, JPG, GIF up to 10MB</p>
+                                </div>
+                            </div>
+                            <div id="image-class-result" class="mt-4 text-center font-semibold text-lg p-3 rounded-lg hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <footer class="text-center mt-8 text-slate-500 text-sm">
+            <p>&copy; 2025 AI Innovate Shivamogga. All rights reserved.</p>
+        </footer>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const data = {
+        services: [
+            { id: 'consulting', name: 'AI/ML Consulting', icon: '🤝', description: 'We help you identify high-impact AI opportunities, define clear use cases, and develop a strategic roadmap for AI adoption, ensuring your investments deliver tangible ROI.' },
+            { id: 'custom', name: 'Custom AI Models', icon: '⚙️', description: 'Our team builds bespoke AI and Machine Learning models from the ground up, tailored specifically to solve your unique business challenges and integrate with your existing data infrastructure.' },
+            { id: 'data-science', name: 'Data Science', icon: '📊', description: 'Unlock the value in your data. We offer end-to-end data science services, including data collection, cleaning, advanced statistical analysis, and insightful visualizations.' },
+            { id: 'nlp', name: 'NLP', icon: '💬', description: 'Harness the power of language with our Natural Language Processing solutions, including intelligent chatbots, sentiment analysis, text summarization, and content moderation.' },
+            { id: 'computer-vision', name: 'Computer Vision', icon: '👁️', description: 'Enable your systems to see and understand the world. We develop solutions for image analysis, object detection, quality control, and medical image interpretation.' },
+            { id: 'generative-ai', name: 'Generative AI', icon: '✨', description: 'Push the boundaries of creativity and automation with Generative AI. We build models for generating high-quality text, images, code, and other creative content.' },
+            { id: 'predictive', name: 'Predictive Analytics', icon: '🔮', description: 'Anticipate future trends and outcomes with our predictive analytics services. We specialize in demand forecasting, risk assessment, and fraud detection.' },
+            { id: 'integration', name: 'AI Integration', icon: '🔌', description: 'We ensure your AI models are seamlessly deployed and integrated into your existing enterprise systems, providing robust APIs and leveraging modern MLOps practices.' }
+        ],
+        sectors: [
+            { id: 'healthcare', name: 'Healthcare', icon: '🩺' },
+            { id: 'finance', name: 'Finance', icon: '💰' },
+            { id: 'ecommerce', name: 'E-commerce', icon: '🛒' },
+            { id: 'manufacturing', name: 'Manufacturing', icon: '🏭' },
+            { id: 'agriculture', name: 'Agriculture', icon: '🌱' },
+            { id: 'education', name: 'Education', icon: '🎓' },
+            { id: 'logistics', name: 'Logistics', icon: '🚚' },
+        ],
+        relations: {
+            'consulting': { 'healthcare': 3, 'finance': 3, 'ecommerce': 3, 'manufacturing': 3, 'agriculture': 2, 'education': 2, 'logistics': 3 },
+            'custom': { 'healthcare': 3, 'finance': 3, 'ecommerce': 2, 'manufacturing': 3, 'agriculture': 3, 'education': 2, 'logistics': 2 },
+            'data-science': { 'healthcare': 3, 'finance': 3, 'ecommerce': 3, 'manufacturing': 3, 'agriculture': 3, 'education': 2, 'logistics': 3 },
+            'nlp': { 'healthcare': 2, 'finance': 2, 'ecommerce': 3, 'education': 3, 'logistics': 1 },
+            'computer-vision': { 'healthcare': 3, 'manufacturing': 3, 'agriculture': 3, 'ecommerce': 2 },
+            'generative-ai': { 'ecommerce': 2, 'education': 3, 'finance': 1 },
+            'predictive': { 'healthcare': 3, 'finance': 3, 'ecommerce': 3, 'manufacturing': 3, 'agriculture': 3, 'logistics': 3 },
+            'integration': { 'healthcare': 3, 'finance': 3, 'ecommerce': 3, 'manufacturing': 3, 'agriculture': 2, 'education': 2, 'logistics': 3 }
+        },
+        useCases: {
+            'healthcare': [ 'AI-powered diagnostics from medical images', 'Drug discovery and clinical trial optimization', 'Personalized patient treatment plans', 'Predictive analytics for patient outcomes' ],
+            'finance': [ 'Algorithmic trading and portfolio management', 'Real-time fraud detection systems', 'AI-driven credit scoring and risk assessment', 'Personalized financial advisory chatbots' ],
+            'ecommerce': [ 'Hyper-personalized product recommendation engines', 'Dynamic pricing and inventory optimization', 'Virtual try-on solutions using computer vision', 'AI-powered customer service chatbots' ],
+            'manufacturing': [ 'Predictive maintenance for industrial machinery', 'Automated quality control with defect detection', 'Supply chain optimization and demand forecasting', 'Robotics and process automation' ],
+            'agriculture': [ 'Crop yield prediction using satellite imagery', 'Automated disease detection in plants', 'Intelligent irrigation systems to conserve water', 'Drone-based field monitoring and analysis' ],
+            'education': [ 'Personalized learning paths for students', 'Intelligent tutoring systems for real-time help', 'Automated grading for assignments and exams', 'Generative AI for creating educational content' ],
+            'logistics': [ 'Dynamic route optimization for delivery fleets', 'Real-time shipment tracking and exception handling', 'Warehouse automation with robotics', 'Accurate demand forecasting for inventory management' ]
+        }
+    };
+
+    let serviceChartInstance = null;
+    let sectorChartInstance = null;
+
+    function init() {
+        setupTabs();
+        populateGrids();
+        setupServiceInteraction();
+        setupSectorInteraction();
+        setupDemos();
+    }
+
+    function setupTabs() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                tabPanes.forEach(pane => {
+                    if (pane.id === `${targetTab}-content`) {
+                        pane.classList.remove('hidden');
+                        pane.classList.add('card-enter');
+                    } else {
+                        pane.classList.add('hidden');
+                        pane.classList.remove('card-enter');
+                    }
+                });
+            });
+        });
+    }
+
+    function createCard(item, type) {
+        return `
+            <div data-id="${item.id}" class="${type}-card cursor-pointer bg-white p-4 rounded-xl shadow-md hover:shadow-indigo-100 hover:ring-2 hover:ring-indigo-500 transition-all duration-300 transform hover:-translate-y-1">
+                <div class="text-3xl mb-2">${item.icon}</div>
+                <h4 class="font-bold text-slate-800">${item.name}</h4>
+            </div>
+        `;
+    }
+
+    function populateGrids() {
+        const servicesGrid = document.getElementById('services-grid');
+        const sectorsGrid = document.getElementById('sectors-grid');
+        servicesGrid.innerHTML = data.services.map(s => createCard(s, 'service')).join('');
+        sectorsGrid.innerHTML = data.sectors.map(s => createCard(s, 'sector')).join('');
+    }
+
+    function setupServiceInteraction() {
+        const serviceCards = document.querySelectorAll('.service-card');
+        const detailView = document.getElementById('service-detail-view');
+        const detailTitle = document.getElementById('service-detail-title');
+        const detailDescription = document.getElementById('service-detail-description');
+
+        serviceCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const serviceId = card.dataset.id;
+                const service = data.services.find(s => s.id === serviceId);
+
+                detailView.classList.remove('hidden');
+                detailView.classList.add('card-enter');
+                detailTitle.textContent = service.name;
+                detailDescription.textContent = service.description;
+
+                updateServiceChart(serviceId);
+                
+                serviceCards.forEach(c => c.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50'));
+                card.classList.add('ring-2', 'ring-indigo-500', 'bg-indigo-50');
+
+                detailView.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+    }
+
+    function updateServiceChart(serviceId) {
+        const chartCanvas = document.getElementById('service-chart');
+        const relevanceData = data.relations[serviceId] || {};
+        const labels = data.sectors.map(s => s.name);
+        const chartData = data.sectors.map(s => relevanceData[s.id] || 0);
+
+        if (serviceChartInstance) {
+            serviceChartInstance.destroy();
+        }
+
+        serviceChartInstance = new Chart(chartCanvas, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Relevance Score',
+                    data: chartData,
+                    backgroundColor: 'rgba(79, 70, 229, 0.6)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 3,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Applicability Across Sectors' }
+                }
+            }
+        });
+    }
+    
+    function setupSectorInteraction() {
+        const sectorCards = document.querySelectorAll('.sector-card');
+        const detailView = document.getElementById('sector-detail-view');
+        const detailTitle = document.getElementById('sector-detail-title');
+        const detailUsecases = document.getElementById('sector-detail-usecases');
+
+        sectorCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const sectorId = card.dataset.id;
+                const sector = data.sectors.find(s => s.id === sectorId);
+                const useCases = data.useCases[sectorId] || [];
+
+                detailView.classList.remove('hidden');
+                detailView.classList.add('card-enter');
+                detailTitle.textContent = `${sector.name} Solutions`;
+                detailUsecases.innerHTML = useCases.map(uc => `<li>${uc}</li>`).join('');
+
+                updateSectorChart(sectorId);
+
+                sectorCards.forEach(c => c.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50'));
+                card.classList.add('ring-2', 'ring-indigo-500', 'bg-indigo-50');
+                
+                detailView.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+    }
+
+    function updateSectorChart(sectorId) {
+        const chartCanvas = document.getElementById('sector-chart');
+        let serviceMix = {};
+        
+        data.services.forEach(service => {
+            if (data.relations[service.id] && data.relations[service.id][sectorId]) {
+                serviceMix[service.name] = data.relations[service.id][sectorId];
+            }
+        });
+        
+        const labels = Object.keys(serviceMix);
+        const chartData = Object.values(serviceMix);
+        
+        if (sectorChartInstance) {
+            sectorChartInstance.destroy();
+        }
+
+        sectorChartInstance = new Chart(chartCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Service Mix',
+                    data: chartData,
+                    backgroundColor: [
+                        'rgba(79, 70, 229, 0.7)',
+                        'rgba(99, 102, 241, 0.7)',
+                        'rgba(129, 140, 248, 0.7)',
+                        'rgba(165, 180, 252, 0.7)',
+                        'rgba(199, 210, 254, 0.7)',
+                        'rgba(224, 231, 255, 0.7)'
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12 } },
+                    title: { display: true, text: 'Mix of AI Technologies Applied' }
+                }
+            }
+        });
+    }
+
+    function setupDemos() {
+        const sentimentBtn = document.getElementById('analyze-sentiment-btn');
+        sentimentBtn.addEventListener('click', () => {
+            const input = document.getElementById('sentiment-input').value;
+            const resultDiv = document.getElementById('sentiment-result');
+            resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800', 'bg-yellow-100', 'text-yellow-800');
+            
+            if (input.trim() === '') {
+                resultDiv.textContent = "Please enter some text.";
+                resultDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+            } else {
+                const positiveWords = ['fantastic', 'love', 'great', 'excellent', 'amazing', 'happy', 'good'];
+                const negativeWords = ['terrible', 'bad', 'hate', 'awful', 'sad', 'poor'];
+                let score = 0;
+                positiveWords.forEach(w => { if(input.toLowerCase().includes(w)) score++; });
+                negativeWords.forEach(w => { if(input.toLowerCase().includes(w)) score--; });
+
+                if (score > 0) {
+                    resultDiv.textContent = "Sentiment: Positive 😊";
+                    resultDiv.classList.add('bg-green-100', 'text-green-800');
+                } else if (score < 0) {
+                    resultDiv.textContent = "Sentiment: Negative 😠";
+                    resultDiv.classList.add('bg-red-100', 'text-red-800');
+                } else {
+                    resultDiv.textContent = "Sentiment: Neutral 😐";
+                    resultDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+                }
+            }
+            resultDiv.classList.remove('hidden');
+            resultDiv.classList.add('card-enter');
+        });
+
+        const fileUpload = document.getElementById('file-upload');
+        fileUpload.addEventListener('change', (e) => {
+            const resultDiv = document.getElementById('image-class-result');
+            const file = e.target.files[0];
+            resultDiv.classList.remove('hidden', 'bg-blue-100', 'text-blue-800');
+            if (file) {
+                 const classes = ['Healthcare Image (X-Ray/MRI)', 'Retail Product', 'Industrial Component', 'Agricultural Crop', 'Document Scan'];
+                 const randomClass = classes[Math.floor(Math.random() * classes.length)];
+                 resultDiv.textContent = `Classification: ${randomClass}`;
+                 resultDiv.classList.add('bg-blue-100', 'text-blue-800');
+                 resultDiv.classList.remove('hidden');
+                 resultDiv.classList.add('card-enter');
+            }
+        });
+    }
+
+    init();
+});
+</script>
+</body>
+</html>
